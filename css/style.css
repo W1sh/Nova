@@ -4,6 +4,11 @@
     text-align: center;
 }
 
+.filler {
+    flex-grow: 1;
+    width: 100%;
+}
+
 .masterpiece {
     color: brown !important;
 }
@@ -16,10 +21,10 @@
     color: gold !important;
 }
 
-.uncommun {
+.uncommon {
     color: darkgray !important;
 }
 
-.commun {
+.common {
     color: black !important;
 }

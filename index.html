@@ -3,14 +3,13 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Nova - A simple MTG list for your cards</title>
     <!-- Scripts -->
     <script src="js/database.js"></script>
     <script src="js/card.js"></script>
     <script src="js/core.js"></script>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/photon.css">
-    <link rel="stylesheet" href="css/photon.min.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
@@ -18,38 +17,49 @@
     <div class="window">
         <div class="window-content">
             <div class="pane-group">
-                <div class="pane-sm sidebar">
+                <div style="display:flex; flex-direction: column" class="pane-sm sidebar">
                     <nav class="nav-group">
                         <h5 class="nav-group-title">Rarity</h5>
                         <a class="nav-group-item">
                             <span class="icon icon-record masterpiece"></span>
                             Masterpieces
                         </a>
-                        <span class="nav-group-item">
+                        <a class="nav-group-item">
                             <span class="icon icon-record mythic"></span>
                             Mythics
-                        </span>
-                        <span class="nav-group-item">
+                        </a>
+                        <a class="nav-group-item">
                             <span class="icon icon-record rare"></span>
                             Rares
-                        </span>
-                        <span class="nav-group-item">
-                            <span class="icon icon-record uncommun"></span>
-                            Uncommuns
-                        </span>
-                        <span class="nav-group-item">
-                            <span class="icon icon-record commun"></span>
-                            Communs
-                        </span>
+                        </a>
+                        <a class="nav-group-item">
+                            <span class="icon icon-record uncommon"></span>
+                            Uncommons
+                        </a>
+                        <a class="nav-group-item">
+                            <span class="icon icon-record common"></span>
+                            Commons
+                        </a>
+                    </nav>
+                    <div class="filler"></div>
+                    <footer class="toolbar toolbar-footer">
+                        <div class="toolbar-actions">
+                            <!--href="https://github.com/W1sh/Nova" -->
+                            <a class="nav-group-item">
+                                <span class="icon icon-github"></span>
+                            </a>
+                        </div>
+                    </footer>
                 </div>
                 <div class="pane">
+                    <input id="searcher" class="form-control" type="text" placeholder="Search for cards">
                     <table class="table-striped">
                         <thead>
                             <tr>
                                 <th width="30%">Name</th>
                                 <th align="center">Mana Cost</th>
                                 <th align="center">Types</th>
-                                <th align="center">Sub-Types</th>
+                                <th align="center">Set</th>
                                 <th align="center">Rarity</th>
                                 <th align="center">P&T</th>
                             </tr>
