@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Hello World!</title>
+    <!-- Scripts -->
+    <script src="js/database.js"></script>
+    <script src="js/card.js"></script>
+    <script src="js/core.js"></script>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/photon.css">
+    <link rel="stylesheet" href="css/photon.min.css">
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="window">
+        <div class="window-content">
+            <div class="pane-group">
+                <div class="pane-sm sidebar">
+                    <nav class="nav-group">
+                        <h5 class="nav-group-title">Rarity</h5>
+                        <a class="nav-group-item">
+                            <span class="icon icon-record masterpiece"></span>
+                            Masterpieces
+                        </a>
+                        <span class="nav-group-item">
+                            <span class="icon icon-record mythic"></span>
+                            Mythics
+                        </span>
+                        <span class="nav-group-item">
+                            <span class="icon icon-record rare"></span>
+                            Rares
+                        </span>
+                        <span class="nav-group-item">
+                            <span class="icon icon-record uncommun"></span>
+                            Uncommuns
+                        </span>
+                        <span class="nav-group-item">
+                            <span class="icon icon-record commun"></span>
+                            Communs
+                        </span>
+                </div>
+                <div class="pane">
+                    <table class="table-striped">
+                        <thead>
+                            <tr>
+                                <th width="30%">Name</th>
+                                <th align="center">Mana Cost</th>
+                                <th align="center">Types</th>
+                                <th align="center">Sub-Types</th>
+                                <th align="center">Rarity</th>
+                                <th align="center">P&T</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-content">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
