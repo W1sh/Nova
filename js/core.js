@@ -12,15 +12,12 @@ const pipeline = chain([
     streamArray(),
 ]);
 
-let counter = 0;
-pipeline.on('data', data => {
-    console.log(data.value.name);
-    insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
-        data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
-});
-//pipeline.on('finish', () => console.log(counter, 'objects'));
-
 window.onload = function onload() {
+    initSidebar();
+    initPane();
+};
+
+function initSidebar(){
     let as = document.getElementsByClassName("nav-group-item");
     let navMasterpieces = as[0];
     navMasterpieces.onclick = function(){
@@ -42,32 +39,39 @@ window.onload = function onload() {
     navCommons.onclick = function(){
         focus(this, as);
     };
+    let navNewDeck = as[5];
+    navNewDeck.onclick = function(){
+        focus(undefined, as);
+        let deckNavBar = $("deckNavBar");
+        let newAElement = document.createElement("a");
+        newAElement.className = "nav-group-item";
+        newAElement.onmousedown = function(e){ 
+            if(e.button === 0){
+                focus(this, as);
+            }else if(e.button === 2){
+                focus(undefined, as);
+            }
+        };
+        let txtA = document.createTextNode("New deck");
+        newAElement.appendChild(txtA);
+        deckNavBar.appendChild(newAElement);
+    };
+}
+
+function initPane(){
     let textSearchBar = $("searcher");
-    console.log(textSearchBar);
     textSearchBar.onkeyup = function(){
         console.log(this.value);
         //filterResults(this.value);
     };
-
-    //var mydata = JSON.parse(data);
-    //console.log(mydata.length);
-    //connectDatabase();
-
     table = document.getElementsByTagName("tbody")[0];
-    /*queryDatabase("{}", function (results) {
-        console.log(results);
-        for (let object of results) {
-            console.log(object);
-            insertTableRow(object.name, object.manaCost, object.type, object.subtype,
-                object.rarity, object.power, object.toughness);
-        }
-    });*/
-    //let test = new Card("Ponder", "B", "Instant", undefined, "common", undefined, undefined);
-    // Create an empty <tr> element and add it to the 1st position of the table:
-    //insertTableRow(test);
-    //insertIntoDatabase(test);
-    //deleteManyObjectsDatabase({name: "Ponder"});
-};
+    pipeline.on('data', data => {
+        console.log(data.value.name);
+        insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
+            data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
+    });
+    //pipeline.on('finish', () => console.log(counter, 'objects'));
+}
 
 function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     let row = table.insertRow(0);
@@ -99,9 +103,15 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
 }
 
 function focus(objectToFocus, objectsToUnfocus){
-    objectToFocus.classList.add("active");
-    for (let object of objectsToUnfocus) {
-        if (object !== objectToFocus && object.classList.contains("active")) {
+    if(objectToFocus !== undefined){
+        objectToFocus.classList.add("active");
+        for (let object of objectsToUnfocus) {
+            if (object !== objectToFocus && object.classList.contains("active")) {
+                object.classList.remove("active");
+            }
+        }
+    }else{
+        for (let object of objectsToUnfocus) {
             object.classList.remove("active");
         }
     }

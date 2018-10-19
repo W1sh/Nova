@@ -5,7 +5,6 @@
     <meta charset="UTF-8">
     <title>Nova - A simple MTG list for your cards</title>
     <!-- Scripts -->
-    <script src="js/database.js"></script>
     <script src="js/card.js"></script>
     <script src="js/core.js"></script>
     <!-- Stylesheets -->
@@ -39,6 +38,17 @@
                         <a class="nav-group-item">
                             <span class="icon icon-record common"></span>
                             Commons
+                        </a>
+                    </nav>
+                    <nav id="deckNavBar" class="nav-group">
+                        <menu type="context" class="menu" id="menu">
+                            <menuitem class="menu-item" label="Delete deck">
+                            </menuitem>
+                        </menu>
+                        <h5 class="nav-group-title">Your decks</h5>
+                        <a contextmenu="menu" class="nav-group-item">
+                            <span class="icon icon-plus"></span>
+                            Add new deck
                         </a>
                     </nav>
                     <div class="filler"></div>
