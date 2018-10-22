@@ -15,30 +15,30 @@ const pipeline = chain([
 window.onload = function onload() {
     initSidebar();
     initPane();
-};
+}; // onload
 
 function initSidebar(){
     let as = document.getElementsByClassName("nav-group-item");
     let navMasterpieces = as[0];
     navMasterpieces.onclick = function(){
         focus(this, as);
-    };
+    }; // navMasterpieces.onclick
     let navMythics = as[1];
     navMythics.onclick = function(){
         focus(this, as);
-    };
+    }; // navMythics.onclick
     let navRares = as[2];
     navRares.onclick = function(){
         focus(this, as);
-    };
+    }; // navRares.onclick
     let navUncommons = as[3];
     navUncommons.onclick = function(){
         focus(this, as);
-    };
+    }; // navUncommons.onclick
     let navCommons = as[4];
     navCommons.onclick = function(){
         focus(this, as);
-    };
+    }; // navCommons.onclick
     let navNewDeck = as[5];
     navNewDeck.onclick = function(){
         focus(undefined, as);
@@ -51,56 +51,73 @@ function initSidebar(){
             }else if(e.button === 2){
                 focus(undefined, as);
             }
-        };
+        }; // newAElement.onmousedown
         let txtA = document.createTextNode("New deck");
         newAElement.appendChild(txtA);
         deckNavBar.appendChild(newAElement);
-    };
-}
+    }; // navNewDeck.onclick
+} // initSidebar
 
 function initPane(){
     let textSearchBar = $("searcher");
+    let counter = 0;
     textSearchBar.onkeyup = function(){
         console.log(this.value);
         //filterResults(this.value);
-    };
+    }; // textSearchBar.onkeyup
     table = document.getElementsByTagName("tbody")[0];
     pipeline.on('data', data => {
+        counter++;
         console.log(data.value.name);
         insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
             data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
     });
-    //pipeline.on('finish', () => console.log(counter, 'objects'));
-}
+    pipeline.on('finish', () => {
+        console.log(counter, 'objects');
+    });
+    
+} // initPane
 
 function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     let row = table.insertRow(0);
-
+    row.onclick = function(){
+        if(this.classList.contains("selected")){
+            row.classList.remove("selected");
+        }else{
+            for(let row of this.parentElement.getElementsByTagName("tr")){
+                if(row.classList.contains("selected")){
+                    row.classList.remove("selected");
+                }
+            }
+            row.classList.add("selected");
+        }
+    }; // row.onclick
+    
     let cellName = row.insertCell(0);
-    let txtName = document.createTextNode(name);
-    cellName.appendChild(txtName);
+    cellName.appendChild(document.createTextNode(name));
+
     let cellManaCost = row.insertCell(1);
-    let txtManaCost = document.createTextNode(manaCost);
     cellManaCost.className = "cell-center";
-    cellManaCost.appendChild(txtManaCost);
+    cellManaCost.appendChild(document.createTextNode(manaCost));
+
     let cellType = row.insertCell(2);
-    let txtType = document.createTextNode(type);
     cellType.className = "cell-center";
-    cellType.appendChild(txtType);
+    cellType.appendChild(document.createTextNode(type));
+
     let cellSet = row.insertCell(3);
-    let txtSet = document.createTextNode(set);
     cellSet.className = "cell-center";
-    cellSet.appendChild(txtSet);
+    cellSet.appendChild(document.createTextNode(set));
+
     let cellRarity = row.insertCell(4);
     cellRarity.className = "cell-center";
     let iconRarity = document.createElement("span");
     iconRarity.className = "icon icon-record " + rarity;
     cellRarity.appendChild(iconRarity);
+
     let cellPT = row.insertCell(5);
-    let txtPT = document.createTextNode(power + "|" + toughness);
     cellPT.className = "cell-center";
-    cellPT.appendChild(txtPT);
-}
+    cellPT.appendChild(document.createTextNode(power + "|" + toughness));
+} // insertTableRow
 
 function focus(objectToFocus, objectsToUnfocus){
     if(objectToFocus !== undefined){
@@ -115,7 +132,7 @@ function focus(objectToFocus, objectsToUnfocus){
             object.classList.remove("active");
         }
     }
-}
+} // focus
 
 function $(query) {
     let element = document.getElementById(query);
@@ -126,4 +143,4 @@ function $(query) {
         return;
     }
     return element;
-}
+} // $
