@@ -49,7 +49,8 @@ function initSidebar(){
             if(e.button === 0){
                 focus(this, as);
             }else if(e.button === 2){
-                focus(undefined, as);
+                this.parentElement.removeChild(this);
+                //focus(undefined, as);
             }
         }; // newAElement.onmousedown
         let txtA = document.createTextNode("New deck");
@@ -66,16 +67,49 @@ function initPane(){
         //filterResults(this.value);
     }; // textSearchBar.onkeyup
     table = document.getElementsByTagName("tbody")[0];
+    let thName = $("thName");
+    thName.onclick = function() {
+        sortColumn(1);
+    }; // thName.onclick
+    let thType = $("thType");
+    thType.onclick = function() {
+        sortColumn(2);
+    }; // thType.onclick
+    let thSet = $("thSet");
+    thSet.onclick = function() {
+        sortColumn(3);
+    }; // thSet.onclick
     pipeline.on('data', data => {
-        counter++;
-        console.log(data.value.name);
-        insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
-            data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
+        if(counter < 50 ) {
+            counter++;
+            insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
+                data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
+        }
     });
     pipeline.on('finish', () => {
         console.log(counter, 'objects');
     });
-    
+    function sortColumn(columnNumber){
+        let switching, shouldSwitch, rows, x, y;
+        switching = true;
+        rows = table.getElementsByTagName("tr");
+        while (switching) {
+            switching = false;
+            shouldSwitch = false;
+            for (i = 0; i < (rows.length - 1); i++) {
+              x = rows[i].getElementsByTagName("td")[columnNumber];
+              y = rows[i + 1].getElementsByTagName("td")[columnNumber];
+              if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
+              }
+            }
+            if (shouldSwitch) {
+              rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
+              switching = true;
+            }
+          }
+    } // sortColumn
 } // initPane
 
 function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
@@ -92,16 +126,15 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
             row.classList.add("selected");
         }
     }; // row.onclick
+
+    let cellManaCost = row.insertCell(0);
+    cellManaCost.className = "cell-align-right";
+    cellManaCost.appendChild(document.createTextNode(manaCost));
     
-    let cellName = row.insertCell(0);
+    let cellName = row.insertCell(1);
     cellName.appendChild(document.createTextNode(name));
 
-    let cellManaCost = row.insertCell(1);
-    cellManaCost.className = "cell-center";
-    cellManaCost.appendChild(document.createTextNode(manaCost));
-
     let cellType = row.insertCell(2);
-    cellType.className = "cell-center";
     cellType.appendChild(document.createTextNode(type));
 
     let cellSet = row.insertCell(3);
@@ -115,8 +148,9 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     cellRarity.appendChild(iconRarity);
 
     let cellPT = row.insertCell(5);
+    let powerToughnessString = (power === undefined ? "" : power + "|" + toughness);
     cellPT.className = "cell-center";
-    cellPT.appendChild(document.createTextNode(power + "|" + toughness));
+    cellPT.appendChild(document.createTextNode(powerToughnessString));
 } // insertTableRow
 
 function focus(objectToFocus, objectsToUnfocus){

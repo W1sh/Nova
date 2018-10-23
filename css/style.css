@@ -9,6 +9,10 @@
     text-align: center;
 }
 
+.cell-align-right {
+    text-align: right;
+}
+
 .context-menu {
     display: none;
     position: absolute;
