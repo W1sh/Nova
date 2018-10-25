@@ -1,20 +1,11 @@
 // jshint esversion: 6
-const {streamArray} = require('stream-json/streamers/StreamArray');
-const {parser} = require('stream-json');
-const {pick}   = require('stream-json/filters/Pick');
-const {chain} = require('stream-chain');
-const fs = require('fs');
-
 let table;
-const pipeline = chain([
-    fs.createReadStream('assets/test.json'),
-    parser(),
-    streamArray(),
-]);
 
 window.onload = function onload() {
     initSidebar();
     initPane();
+
+    populateTable();
 }; // onload
 
 function initSidebar(){
@@ -61,10 +52,13 @@ function initSidebar(){
 
 function initPane(){
     let textSearchBar = $("searcher");
-    let counter = 0;
-    textSearchBar.onkeyup = function(){
-        console.log(this.value);
-        //filterResults(this.value);
+    textSearchBar.onkeyup = function(e){
+        if(e.keyCode === 13){
+            while (table.firstChild) {
+                table.removeChild(table.firstChild);
+            }
+            populateTable(this.value);
+        }
     }; // textSearchBar.onkeyup
     table = document.getElementsByTagName("tbody")[0];
     let thName = $("thName");
@@ -79,16 +73,10 @@ function initPane(){
     thSet.onclick = function() {
         sortColumn(3);
     }; // thSet.onclick
-    pipeline.on('data', data => {
-        if(counter < 50 ) {
-            counter++;
-            insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
-                data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
-        }
-    });
-    pipeline.on('finish', () => {
-        console.log(counter, 'objects');
-    });
+    let thPowerToughness = $("thPowerToughness");
+    thPowerToughness.onclick = function() {
+        //sortColumn(5);
+    }; // thSet.onclick
     function sortColumn(columnNumber){
         let switching, shouldSwitch, rows, x, y;
         switching = true;
