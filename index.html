@@ -15,6 +15,19 @@
 
 <body>
     <div class="window">
+        <div class="tab-group" style="display: none">
+            <div class="tab-item active">
+                <span class="icon icon-cancel icon-close-tab"></span>
+                Tab
+            </div>
+            <!--<div class="tab-item active">
+                <span class="icon icon-cancel icon-close-tab"></span>
+                Tab active
+            </div>-->
+            <div class="tab-item tab-item-fixed">
+                <span class="icon icon-plus"></span>
+            </div>
+        </div>
         <div class="window-content">
             <div class="pane-group">
                 <div style="display:flex; flex-direction: column" class="pane-sm sidebar">
@@ -76,9 +89,12 @@
         <footer class="toolbar toolbar-footer">
             <div class="toolbar-actions">
                 <!--href="https://github.com/W1sh/Nova" -->
-                <a class="nav-group-item">
+                <!--<a class="nav-group-item">
                     <span class="icon icon-github"></span>
-                </a>
+                </a>-->
+                <button class="btn btn-mini btn-primary pull-right">
+                    Save
+                </button>
             </div>
         </footer>
     </div>

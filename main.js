@@ -1,6 +1,6 @@
 // Modules to control application life and create native browser window
 // jshint esversion: 6
-const {app,BrowserWindow} = require('electron');
+const {app, BrowserWindow, globalShortcut} = require('electron');
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
@@ -12,6 +12,7 @@ function createWindow() {
         height: 600
     });
     // and load the index.html of the app.
+    mainWindow.setMenu(null)
     mainWindow.webContents.openDevTools();
     mainWindow.loadFile('index.html');
     mainWindow.on('closed', function () {
@@ -21,7 +22,15 @@ function createWindow() {
         mainWindow = null;
     });
 }
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createWindow();
+    // Register a 'CommandOrControl+Y' shortcut listener.
+    globalShortcut.register('CommandOrControl+R', () => {
+        //app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])});
+        app.relaunch();
+        app.exit(0);
+    });
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

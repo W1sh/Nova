@@ -143,7 +143,11 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
 
 function focus(objectToFocus, objectsToUnfocus){
     if(objectToFocus !== undefined){
-        objectToFocus.classList.add("active");
+        if(objectToFocus.classList.contains("active")){
+            objectToFocus.classList.remove("active");
+        }else{
+            objectToFocus.classList.add("active");
+        }
         for (let object of objectsToUnfocus) {
             if (object !== objectToFocus && object.classList.contains("active")) {
                 object.classList.remove("active");
