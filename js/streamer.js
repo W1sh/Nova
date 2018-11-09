@@ -1,32 +1,38 @@
 //jshint esversion: 6
-const {streamArray} = require('stream-json/streamers/StreamArray');
-const {parser} = require('stream-json');
-const {chain} = require('stream-chain');
+const {
+    streamArray
+} = require('stream-json/streamers/StreamArray');
+const {
+    parser
+} = require('stream-json');
+const {
+    chain
+} = require('stream-chain');
 const fs = require('fs');
 
-function populateTable(filter){
+function populateTable(filter) {
     const pipeline = chain([
         fs.createReadStream('assets/test.json'),
         parser(),
         streamArray()
     ]);
-    let objectCounter = 0;
-    let objectsInsertedCounter = 0;
+    let objectCounter = 0,
+        objectsInsertedCounter = 0;
 
     pipeline.on('data', data => {
         objectCounter++;
         console.log(data);
-        if(objectsInsertedCounter < 50 ) {
-            if(filter !== undefined){
-                if(data.value.name.toLowerCase().includes(filter.toLowerCase())){
+        if (objectsInsertedCounter < 50) {
+            if (filter !== undefined) {
+                if (data.value.name.toLowerCase().includes(filter.toLowerCase())) {
                     objectsInsertedCounter++;
                     insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
                         data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
                 }
-            }else{
+            } else {
                 objectsInsertedCounter++;
-                    insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
-                        data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
+                insertTableRow(data.value.name, data.value.mana_cost, data.value.type_line,
+                    data.value.set_name, data.value.rarity, data.value.power, data.value.toughness);
             }
         }
     });
@@ -35,7 +41,25 @@ function populateTable(filter){
         console.log(objectCounter + " objects, " + objectsInsertedCounter + " objects inserted in the table.");
     });
 
-    pipeline.on("error", function(err){
+    pipeline.on("error", function (err) {
         console.log("error !!!");
     });
+}
+
+function filterResultsByRarity(table, filter) {
+    if (filter !== undefined) {
+        for (let row of table.getElementsByTagName("tr")) {
+            if (!row.cells[4].firstChild.classList.contains(filter)) {
+                row.style.display = "none";
+            } else {
+                if (row.style.display === "none") {
+                    row.style.display = "";
+                }
+            }
+        }
+    } else {
+        for (let row of table.getElementsByTagName("tr")) {
+            row.style.display = "";
+        }
+    }
 }

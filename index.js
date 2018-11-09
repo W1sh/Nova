@@ -11,32 +11,41 @@ window.onload = function onload() {
 function initSidebar() {
     let navItems = document.getElementsByClassName("nav-group-item");
     Array.from(navItems).forEach(function (navItem) {
-        if (navItem.parentElement.id === "categoriesNavGroup") {
-            navItem.addEventListener('mousedown', function () {
-                focus(this, navItem.parentElement.getElementsByClassName("nav-group-item"));
-            });
-        } else {
-            navItem.addEventListener('mousedown', function (e) {
-                if (e.button > 0) return;
-                let deckNavBar = $("deckNavBar");
-                let newAElement = document.createElement("a");
-                newAElement.className = "nav-group-item";
-                newAElement.onmousedown = function (e) {
-                    if (e.button === 0) {
-                        focus(this, this.parentElement.getElementsByClassName("nav-group-item"));
-                    } else if (e.button === 2) {
-                        this.parentElement.removeChild(this);
+        switch (navItem.parentElement.id) {
+            case "raritiesNavGroup":
+                navItem.addEventListener('mousedown', function () {
+                    focus(navItem, navItem.parentElement.getElementsByClassName("nav-group-item"));
+                    if(navItem.classList.contains("active")){
+                        filterResultsByRarity(table, navItem.childNodes[1].id);
+                    }else{
+                        filterResultsByRarity(table, undefined);
                     }
-                }; // newAElement.onmousedown
-                let txtA = document.createTextNode("New deck");
-                newAElement.appendChild(txtA);
-                deckNavBar.appendChild(newAElement);
-            });
-        }
+                });
+                break;
+            case "deckNavGroup":
+                navItem.addEventListener('mousedown', function (e) {
+                    if (e.button > 0) return;
+                    let deckNavBar = $("deckNavBar");
+                    let newAElement = document.createElement("a");
+                    newAElement.className = "nav-group-item";
+                    newAElement.onmousedown = function (e) {
+                        if (e.button === 0) {
+                            focus(this, this.parentElement.getElementsByClassName("nav-group-item"));
+                        } else if (e.button === 2) {
+                            this.parentElement.removeChild(this);
+                        }
+                    }; // newAElement.onmousedown
+                    let txtA = document.createTextNode("New deck");
+                    newAElement.appendChild(txtA);
+                    deckNavBar.appendChild(newAElement);
+                });
+                break;
+        } // switch
     });
 } // initSidebar
 
 function initPane() {
+    table = document.getElementsByTagName("tbody")[0];
     let textSearchBar = $("searcher");
     textSearchBar.onkeyup = function (e) {
         if (e.keyCode === 13) {
@@ -46,44 +55,6 @@ function initPane() {
             populateTable(this.value);
         }
     }; // textSearchBar.onkeyup
-    table = document.getElementsByTagName("tbody")[0];
-    let thName = $("thName");
-    thName.onclick = function () {
-        sortColumn(1);
-    }; // thName.onclick
-    let thType = $("thType");
-    thType.onclick = function () {
-        sortColumn(2);
-    }; // thType.onclick
-    let thSet = $("thSet");
-    thSet.onclick = function () {
-        sortColumn(3);
-    }; // thSet.onclick
-    let thPowerToughness = $("thPowerToughness");
-    thPowerToughness.onclick = function () {
-        //sortColumn(5);
-    }; // thSet.onclick
-    function sortColumn(columnNumber) {
-        let switching, shouldSwitch, rows, x, y;
-        switching = true;
-        rows = table.getElementsByTagName("tr");
-        while (switching) {
-            switching = false;
-            shouldSwitch = false;
-            for (i = 0; i < (rows.length - 1); i++) {
-                x = rows[i].getElementsByTagName("td")[columnNumber];
-                y = rows[i + 1].getElementsByTagName("td")[columnNumber];
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-            if (shouldSwitch) {
-                rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
-        }
-    } // sortColumn
 } // initPane
 
 function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
@@ -126,6 +97,28 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     cellPT.className = "cell-center";
     cellPT.appendChild(document.createTextNode(powerToughnessString));
 } // insertTableRow
+
+function sortColumn(columnNumber) {
+    let switching, shouldSwitch, rows, x, y;
+    switching = true;
+    rows = table.getElementsByTagName("tr");
+    while (switching) {
+        switching = false;
+        shouldSwitch = false;
+        for (i = 0; i < (rows.length - 1); i++) {
+            x = rows[i].getElementsByTagName("td")[columnNumber];
+            y = rows[i + 1].getElementsByTagName("td")[columnNumber];
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
+            }
+        }
+        if (shouldSwitch) {
+            rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
+        }
+    } // while
+} // sortColumn
 
 function focus(objectToFocus, objectsToUnfocus) {
     if (objectToFocus !== undefined) {
