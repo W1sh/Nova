@@ -12,7 +12,7 @@ function createWindow() {
         height: 600
     });
     // and load the index.html of the app.
-    mainWindow.setMenu(null)
+    mainWindow.setMenu(null);
     mainWindow.webContents.openDevTools();
     mainWindow.loadFile('index.html');
     mainWindow.on('closed', function () {
@@ -24,11 +24,15 @@ function createWindow() {
 }
 app.on('ready', () => {
     createWindow();
-    // Register a 'CommandOrControl+Y' shortcut listener.
     globalShortcut.register('CommandOrControl+R', () => {
-        //app.relaunch({args: process.argv.slice(1).concat(['--relaunch'])});
+        mainWindow.loadFile('index.html');
+    });
+    /*globalShortcut.register('F12', () => {
         app.relaunch();
         app.exit(0);
+    });*/
+    globalShortcut.register('F12', () => {
+        mainWindow.webContents.openDevTools();
     });
 });
 

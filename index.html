@@ -7,7 +7,7 @@
     <!-- Scripts -->
     <script src="js/card.js"></script>
     <script src="js/streamer.js"></script>
-    <script src="js/core.js"></script>
+    <script src="js/index.js"></script>
     <!-- Stylesheets -->
     <link rel="stylesheet" href="css/photon.css">
     <link rel="stylesheet" href="css/style.css">
@@ -31,7 +31,7 @@
         <div class="window-content">
             <div class="pane-group">
                 <div style="display:flex; flex-direction: column" class="pane-sm sidebar">
-                    <nav class="nav-group">
+                    <nav id="categoriesNavGroup" class="nav-group">
                         <h5 class="nav-group-title">Rarity</h5>
                         <a class="nav-group-item">
                             <span class="icon icon-record masterpiece"></span>
@@ -73,9 +73,9 @@
                         <thead>
                             <tr>
                                 <th align="center" id="thManaCost">Mana Cost</th>
-                                <th align="center" width="30%" id="thName">Name</th>
-                                <th align="center" id="thType">Types</th>
-                                <th align="center" id="thSet">Set</th>
+                                <th align="center" onclick="sortColumn(1);" width="30%" id="thName">Name</th>
+                                <th align="center" onclick="sortColumn(2);" id="thType">Types</th>
+                                <th align="center" onclick="sortColumn(3);" id="thSet">Set</th>
                                 <th align="center" id="thRarity">Rarity</th>
                                 <th align="center" id="thPowerToughness">P&T</th>
                             </tr>

@@ -8,52 +8,38 @@ window.onload = function onload() {
     populateTable();
 }; // onload
 
-function initSidebar(){
-    let as = document.getElementsByClassName("nav-group-item");
-    let navMasterpieces = as[0];
-    navMasterpieces.onclick = function(){
-        focus(this, as);
-    }; // navMasterpieces.onclick
-    let navMythics = as[1];
-    navMythics.onclick = function(){
-        focus(this, as);
-    }; // navMythics.onclick
-    let navRares = as[2];
-    navRares.onclick = function(){
-        focus(this, as);
-    }; // navRares.onclick
-    let navUncommons = as[3];
-    navUncommons.onclick = function(){
-        focus(this, as);
-    }; // navUncommons.onclick
-    let navCommons = as[4];
-    navCommons.onclick = function(){
-        focus(this, as);
-    }; // navCommons.onclick
-    let navNewDeck = as[5];
-    navNewDeck.onclick = function(){
-        focus(undefined, as);
-        let deckNavBar = $("deckNavBar");
-        let newAElement = document.createElement("a");
-        newAElement.className = "nav-group-item";
-        newAElement.onmousedown = function(e){ 
-            if(e.button === 0){
-                focus(this, as);
-            }else if(e.button === 2){
-                this.parentElement.removeChild(this);
-                //focus(undefined, as);
-            }
-        }; // newAElement.onmousedown
-        let txtA = document.createTextNode("New deck");
-        newAElement.appendChild(txtA);
-        deckNavBar.appendChild(newAElement);
-    }; // navNewDeck.onclick
+function initSidebar() {
+    let navItems = document.getElementsByClassName("nav-group-item");
+    Array.from(navItems).forEach(function (navItem) {
+        if (navItem.parentElement.id === "categoriesNavGroup") {
+            navItem.addEventListener('mousedown', function () {
+                focus(this, navItem.parentElement.getElementsByClassName("nav-group-item"));
+            });
+        } else {
+            navItem.addEventListener('mousedown', function (e) {
+                if (e.button > 0) return;
+                let deckNavBar = $("deckNavBar");
+                let newAElement = document.createElement("a");
+                newAElement.className = "nav-group-item";
+                newAElement.onmousedown = function (e) {
+                    if (e.button === 0) {
+                        focus(this, this.parentElement.getElementsByClassName("nav-group-item"));
+                    } else if (e.button === 2) {
+                        this.parentElement.removeChild(this);
+                    }
+                }; // newAElement.onmousedown
+                let txtA = document.createTextNode("New deck");
+                newAElement.appendChild(txtA);
+                deckNavBar.appendChild(newAElement);
+            });
+        }
+    });
 } // initSidebar
 
-function initPane(){
+function initPane() {
     let textSearchBar = $("searcher");
-    textSearchBar.onkeyup = function(e){
-        if(e.keyCode === 13){
+    textSearchBar.onkeyup = function (e) {
+        if (e.keyCode === 13) {
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
             }
@@ -62,22 +48,22 @@ function initPane(){
     }; // textSearchBar.onkeyup
     table = document.getElementsByTagName("tbody")[0];
     let thName = $("thName");
-    thName.onclick = function() {
+    thName.onclick = function () {
         sortColumn(1);
     }; // thName.onclick
     let thType = $("thType");
-    thType.onclick = function() {
+    thType.onclick = function () {
         sortColumn(2);
     }; // thType.onclick
     let thSet = $("thSet");
-    thSet.onclick = function() {
+    thSet.onclick = function () {
         sortColumn(3);
     }; // thSet.onclick
     let thPowerToughness = $("thPowerToughness");
-    thPowerToughness.onclick = function() {
+    thPowerToughness.onclick = function () {
         //sortColumn(5);
     }; // thSet.onclick
-    function sortColumn(columnNumber){
+    function sortColumn(columnNumber) {
         let switching, shouldSwitch, rows, x, y;
         switching = true;
         rows = table.getElementsByTagName("tr");
@@ -85,29 +71,29 @@ function initPane(){
             switching = false;
             shouldSwitch = false;
             for (i = 0; i < (rows.length - 1); i++) {
-              x = rows[i].getElementsByTagName("td")[columnNumber];
-              y = rows[i + 1].getElementsByTagName("td")[columnNumber];
-              if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                shouldSwitch = true;
-                break;
-              }
+                x = rows[i].getElementsByTagName("td")[columnNumber];
+                y = rows[i + 1].getElementsByTagName("td")[columnNumber];
+                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                    shouldSwitch = true;
+                    break;
+                }
             }
             if (shouldSwitch) {
-              rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
-              switching = true;
+                rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
+                switching = true;
             }
-          }
+        }
     } // sortColumn
 } // initPane
 
 function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     let row = table.insertRow(0);
-    row.onclick = function(){
-        if(this.classList.contains("selected")){
+    row.onclick = function () {
+        if (this.classList.contains("selected")) {
             row.classList.remove("selected");
-        }else{
-            for(let row of this.parentElement.getElementsByTagName("tr")){
-                if(row.classList.contains("selected")){
+        } else {
+            for (let row of this.parentElement.getElementsByTagName("tr")) {
+                if (row.classList.contains("selected")) {
                     row.classList.remove("selected");
                 }
             }
@@ -118,7 +104,7 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     let cellManaCost = row.insertCell(0);
     cellManaCost.className = "cell-align-right";
     cellManaCost.appendChild(document.createTextNode(manaCost));
-    
+
     let cellName = row.insertCell(1);
     cellName.appendChild(document.createTextNode(name));
 
@@ -141,11 +127,11 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     cellPT.appendChild(document.createTextNode(powerToughnessString));
 } // insertTableRow
 
-function focus(objectToFocus, objectsToUnfocus){
-    if(objectToFocus !== undefined){
-        if(objectToFocus.classList.contains("active")){
+function focus(objectToFocus, objectsToUnfocus) {
+    if (objectToFocus !== undefined) {
+        if (objectToFocus.classList.contains("active")) {
             objectToFocus.classList.remove("active");
-        }else{
+        } else {
             objectToFocus.classList.add("active");
         }
         for (let object of objectsToUnfocus) {
@@ -153,7 +139,7 @@ function focus(objectToFocus, objectsToUnfocus){
                 object.classList.remove("active");
             }
         }
-    }else{
+    } else {
         for (let object of objectsToUnfocus) {
             object.classList.remove("active");
         }
