@@ -1,8 +1,8 @@
 @charset "UTF-8";
 
-.selected {
-    background-color: blue !important;
-    color: #FFF;
+tr.selected {
+  color: #fff;
+  background-color: darkgray !important;
 }
 
 .cell-center {
@@ -11,6 +11,10 @@
 
 .cell-align-right {
     text-align: right;
+}
+
+.spaced {
+    margin-right: 7px;
 }
 
 .context-menu {

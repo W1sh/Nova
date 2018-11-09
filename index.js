@@ -12,6 +12,16 @@ function initSidebar() {
     let navItems = document.getElementsByClassName("nav-group-item");
     Array.from(navItems).forEach(function (navItem) {
         switch (navItem.parentElement.id) {
+            case "colorsNavGroup":
+                navItem.addEventListener('mousedown', function () {
+                    focus(navItem, navItem.parentElement.getElementsByClassName("nav-group-item"));
+                    if(navItem.classList.contains("active")){
+                        filterResultsByColor(table, navItem.childNodes[1].id);
+                    }else{
+                        filterResultsByColor(table, undefined);
+                    }
+                });
+                break;
             case "raritiesNavGroup":
                 navItem.addEventListener('mousedown', function () {
                     focus(navItem, navItem.parentElement.getElementsByClassName("nav-group-item"));
@@ -59,7 +69,7 @@ function initPane() {
 
 function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
     let row = table.insertRow(0);
-    row.onclick = function () {
+    row.onmousedown = function () {
         if (this.classList.contains("selected")) {
             row.classList.remove("selected");
         } else {

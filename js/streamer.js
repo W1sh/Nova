@@ -45,6 +45,8 @@ function populateTable(filter) {
         console.log("error !!!");
     });
 }
+function filterResultsByColor(table, filter) {
+}
 
 function filterResultsByRarity(table, filter) {
     if (filter !== undefined) {
