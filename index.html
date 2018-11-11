@@ -16,7 +16,10 @@
 
 <body>
     <div class="window">
-        <div class="tab-group" style="display: none">
+        <div id="tabsGroup" class="tab-group" style="display: none">
+            <div onclick="hideTabs();" class="tab-item tab-item-fixed">
+                <span class="icon icon-up-open"></span>
+            </div>
             <div class="tab-item active">
                 <span class="icon icon-cancel icon-close-tab"></span>
                 Tab
@@ -34,6 +37,10 @@
                 <div style="display:flex; flex-direction: column" class="pane-sm sidebar">
                     <nav id="colorsNavGroup" class="nav-group">
                         <h5 class="nav-group-title">Colors</h5>
+                        <a class="nav-group-item">
+                            <span id="scColorsIcon" class="mana spaced small sc"></span>
+                            Colorless
+                        </a>
                         <a class="nav-group-item">
                             <span id="swColorsIcon" class="mana spaced small sw"></span>
                             White
@@ -113,9 +120,6 @@
         <footer class="toolbar toolbar-footer">
             <div class="toolbar-actions">
                 <!--href="https://github.com/W1sh/Nova" -->
-                <!--<a class="nav-group-item">
-                    <span class="icon icon-github"></span>
-                </a>-->
                 <button class="btn btn-mini btn-primary pull-right">
                     Save
                 </button>

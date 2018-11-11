@@ -76,7 +76,22 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
             }
             row.classList.add("selected");
         }
-    }; // row.onclick
+    }; // row.onmousedown
+    row.ondblclick = function(){
+        let tabs = document.getElementById("tabsGroup");
+        let newTab = document.createElement("div");
+        let closeTabSpan = document.createElement("span");
+        let tabName = document.createTextNode("new tab");
+        tabs.style.display = "";
+        newTab.className = "tab-item";
+        closeTabSpan.className = "icon icon-cancel icon-close-tab";
+        closeTabSpan.onclick = function (){
+            tabs.removeChild(this.parentElement);
+        };
+        newTab.appendChild(closeTabSpan);
+        newTab.appendChild(tabName);
+        tabs.appendChild(newTab);
+    }; // row.ondblclick
 
     let cellManaCost = row.insertCell(0);
     cellManaCost.className = "cell-align-right";
@@ -163,3 +178,8 @@ function $(query) {
     }
     return element;
 } // $
+
+function hideTabs(){
+    let tabs = document.getElementById("tabsGroup");
+    tabs.style.display = "none";
+}
