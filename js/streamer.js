@@ -45,23 +45,64 @@ function populateTable(filter) {
         console.log("error !!!");
     });
 }
-function filterResultsByColor(table, filter) {
+
+function filterResultsByColor(table, filter, active) {
+    for (let row of table.getElementsByTagName("tr")) {
+        let contains = false;
+        for (let child of row.firstChild.children) {
+            if (child.classList.contains(filter)) {
+                contains = true;
+            }
+        }
+        if (!contains) {
+            if(active){
+                row.style.display = "";
+            }else{
+                row.style.display = "none";
+            }
+        }else{
+            row.style.display = "";
+        }
+    }
 }
 
-function filterResultsByRarity(table, filter) {
-    if (filter !== undefined) {
-        for (let row of table.getElementsByTagName("tr")) {
-            if (!row.cells[4].firstChild.classList.contains(filter)) {
+
+function filterResultsByRarity(table, filter, active) {
+    for (let row of table.getElementsByTagName("tr")) {
+        if (row.cells[4].firstChild.classList.contains(filter)) {
+            row.style.display = "";
+        }else{
+            if(active){
                 row.style.display = "none";
-            } else {
-                if (row.style.display === "none") {
-                    row.style.display = "";
+            }else{
+                row.style.display = "";
+            }
+        }
+    }
+}
+
+function filterResults() {
+    for (let row of table.getElementsByTagName("tr")) {
+        let containsColor = true;
+        let containsRarity = true;
+        if(filter[0] !== "none"){
+            containsColor = false;
+            for (let child of row.firstChild.children) {
+                if (child.classList.contains(filter[0])) {
+                    containsColor = true;
                 }
             }
         }
-    } else {
-        for (let row of table.getElementsByTagName("tr")) {
+        if(filter[1] !== "none"){
+            containsRarity = false;
+            if (row.cells[4].firstChild.classList.contains(filter[1])) {
+                containsRarity = true;
+            }
+        }
+        if(containsColor && containsRarity){
             row.style.display = "";
+        }else{
+            row.style.display = "none";
         }
     }
 }

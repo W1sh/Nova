@@ -1,5 +1,6 @@
 // jshint esversion: 6
-let table;
+var table;
+var filter = ["none", "none"];
 
 window.onload = function onload() {
     initSidebar();
@@ -15,21 +16,16 @@ function initSidebar() {
             case "colorsNavGroup":
                 navItem.addEventListener('mousedown', function () {
                     focus(navItem, navItem.parentElement.getElementsByClassName("nav-group-item"));
-                    if(navItem.classList.contains("active")){
-                        filterResultsByColor(table, navItem.childNodes[1].id);
-                    }else{
-                        filterResultsByColor(table, undefined);
-                    }
+                    filter[0] = (filter[0] === navItem.childNodes[1].id.substring(0, 2)) ?
+                        "none" : navItem.childNodes[1].id.substring(0, 2);
+                    filterResults();
                 });
                 break;
             case "raritiesNavGroup":
                 navItem.addEventListener('mousedown', function () {
                     focus(navItem, navItem.parentElement.getElementsByClassName("nav-group-item"));
-                    if(navItem.classList.contains("active")){
-                        filterResultsByRarity(table, navItem.childNodes[1].id);
-                    }else{
-                        filterResultsByRarity(table, undefined);
-                    }
+                    filter[1] = filter[1] === navItem.childNodes[1].id ? "none" : navItem.childNodes[1].id;
+                    filterResults();
                 });
                 break;
             case "deckNavGroup":
@@ -84,7 +80,15 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
 
     let cellManaCost = row.insertCell(0);
     cellManaCost.className = "cell-align-right";
-    cellManaCost.appendChild(document.createTextNode(manaCost));
+    let separatedManaCost = manaCost;
+    while (separatedManaCost.includes("{") || separatedManaCost.includes("}")) {
+        separatedManaCost = separatedManaCost.replace("{", "").replace("}", "");
+    }
+    for (let index = 0; index < separatedManaCost.length; index++) {
+        let manaIcon = document.createElement("span");
+        manaIcon.className = "mana small s" + separatedManaCost.charAt(index).toLowerCase();
+        cellManaCost.appendChild(manaIcon);
+    }
 
     let cellName = row.insertCell(1);
     cellName.appendChild(document.createTextNode(name));
