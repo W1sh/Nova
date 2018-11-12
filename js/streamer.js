@@ -82,6 +82,7 @@ function filterResultsByRarity(table, filter, active) {
 }
 
 function filterResults() {
+    let counter = 0;
     for (let row of table.getElementsByTagName("tr")) {
         let containsColor = true;
         let containsRarity = true;
@@ -101,8 +102,11 @@ function filterResults() {
         }
         if(containsColor && containsRarity){
             row.style.display = "";
+            counter++;
         }else{
             row.style.display = "none";
         }
     }
+    let resultsFoundText = document.getElementById("resultsFoundText");
+    resultsFoundText.innerText = counter + " results found";
 }

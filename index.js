@@ -51,6 +51,10 @@ function initSidebar() {
 } // initSidebar
 
 function initPane() {
+    let mainTab = document.getElementById("mainTab");
+    mainTab.onclick = function(){
+        focus(this, this.parentElement.getElementsByClassName("tab-item"));
+    };
     table = document.getElementsByTagName("tbody")[0];
     let textSearchBar = $("searcher");
     textSearchBar.onkeyup = function (e) {
@@ -81,16 +85,19 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
         let tabs = document.getElementById("tabsGroup");
         let newTab = document.createElement("div");
         let closeTabSpan = document.createElement("span");
-        let tabName = document.createTextNode("new tab");
+        let tabName = document.createTextNode(name);
         tabs.style.display = "";
         newTab.className = "tab-item";
+        newTab.onclick = function (){
+            focus(this, this.parentElement.getElementsByClassName("tab-item"));
+        };
         closeTabSpan.className = "icon icon-cancel icon-close-tab";
         closeTabSpan.onclick = function (){
             tabs.removeChild(this.parentElement);
         };
         newTab.appendChild(closeTabSpan);
         newTab.appendChild(tabName);
-        tabs.appendChild(newTab);
+        tabs.insertBefore(newTab, tabs.childNodes[tabs.childNodes.length - 2]);
     }; // row.ondblclick
 
     let cellManaCost = row.insertCell(0);
