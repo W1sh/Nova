@@ -8,7 +8,7 @@ let mainWindow;
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
+        width: 1000,
         height: 600
     });
     // and load the index.html of the app.
@@ -27,7 +27,7 @@ app.on('ready', () => {
     globalShortcut.register('CommandOrControl+R', () => {
         mainWindow.loadFile('index.html');
     });
-    /*globalShortcut.register('F12', () => {
+    /*globalShortcut.register('F4', () => {
         app.relaunch();
         app.exit(0);
     });*/
