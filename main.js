@@ -15,12 +15,15 @@ function createWindow() {
     mainWindow.setMenu(null);
     mainWindow.webContents.openDevTools();
     mainWindow.loadFile('index.html');
+    mainWindow.webContents.on('will-navigate', ev => {
+        ev.preventDefault();
+    });
     mainWindow.on('closed', function () {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
-    });
+    }); 
 }
 app.on('ready', () => {
     createWindow();

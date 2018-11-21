@@ -1,12 +1,19 @@
 // jshint esversion: 6
 var table;
-var filter = ["none", "none"];
+var results = [];
+const filter = {
+    name: "",
+    colors: [],
+    rarity: []
+};
 
 window.onload = function onload() {
     initSidebar();
     initPane();
 
-    populateTable();
+    parseJsonData(function () {
+        results.forEach((item) => insertTableRow(item));
+    });
 }; // onload
 
 function initSidebar() {
@@ -15,23 +22,36 @@ function initSidebar() {
         switch (navItem.parentElement.id) {
             case "colorsNavGroup":
                 navItem.addEventListener('mousedown', function () {
-                    focusItem(navItem, navItem.parentElement.querySelectorAll(".nav-group-item"));
-                    filter[0] = (filter[0] === navItem.childNodes[1].id.substring(0, 2)) ?
+                    focusItem(navItem);
+                    let navItemTextColors = navItem.textContent.trim();
+                    if (navItem.classList.contains("active")) {
+                        filter.colors.push(navItemTextColors);
+                    } else {
+                        filter.colors.splice(filter.colors.indexOf(navItemTextColors));
+                    }
+                    /*filter[0] = (filter[0] === navItem.childNodes[1].id.substring(0, 2)) ?
                         "none" : navItem.childNodes[1].id.substring(0, 2);
-                    filterResults();
+                    filterResults();*/
                 });
                 break;
             case "raritiesNavGroup":
                 navItem.addEventListener('mousedown', function () {
-                    focusItem(navItem, navItem.parentElement.querySelectorAll(".nav-group-item"));
-                    filter[1] = (filter[1] === navItem.childNodes[1].id) ? "none" : navItem.childNodes[1].id;
-                    filterResults();
+                    focusItem(navItem);
+                    let navItemTextRarity = navItem.textContent.trim().toLowerCase();
+                    if (navItem.classList.contains("active")) {
+                        filter.rarity.push(navItemTextRarity);
+                    } else {
+                        filter.rarity.splice(navItemTextRarity);
+                    }
+                    /*filter[1] = (filter[1] === navItem.childNodes[1].id) ? "none" : navItem.childNodes[1].id;
+                    filterResults();*/
                 });
                 break;
             case "deckNavGroup":
                 navItem.addEventListener('mousedown', function (e) {
                     if (e.button > 0) return;
-                    let deckNavBar = document.getElementById("deckNavBar");
+                    console.log("   mmmm");
+                    let deckNavBar = document.getElementById("deckNavGroup");
                     let newAElement = document.createElement("a");
                     newAElement.className = "nav-group-item";
                     newAElement.onmousedown = function (e) {
@@ -52,24 +72,25 @@ function initSidebar() {
 
 function initPane() {
     let mainTab = document.getElementById("mainTab");
-    mainTab.onclick = function () {
+    mainTab.addEventListener("mousedown", function () {
         focusItem(this, this.parentElement.querySelectorAll(".tab-item"));
-    };
+    });
     table = document.getElementsByTagName("tbody")[0];
     let textSearchBar = document.getElementById("searcher");
-    textSearchBar.onkeyup = function (e) {
+    textSearchBar.addEventListener("keydown", function (e) {
         if (e.keyCode === 13) {
             while (table.firstChild) {
                 table.removeChild(table.firstChild);
             }
-            populateTable(this.value);
+            filter.name = this.value;
         }
-    }; // textSearchBar.onkeyup
+    });
 } // initPane
 
-function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
+function insertTableRow(card) {
     let row = table.insertRow(0);
-    row.onmousedown = function () {
+
+    row.addEventListener("mousedown", function () {
         if (this.classList.contains("selected")) {
             row.classList.remove("selected");
         } else {
@@ -78,61 +99,46 @@ function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
             });
             row.classList.add("selected");
         }
-    }; // row.onmousedown
-    row.ondblclick = function () {
-        let tabs = document.getElementById("tabsGroup");
-        let newTab = document.createElement("div");
-        let closeTabSpan = document.createElement("span");
-        let tabName = document.createTextNode(name);
-        tabs.style.display = "";
-        closeTabSpan.className = "icon icon-cancel icon-close-tab";
-        closeTabSpan.addEventListener('mousedown', function () {
-            newTab.remove();
-        });
-        newTab.className = "tab-item";
-        newTab.addEventListener('mousedown', function () {
-            if (this.parentElement === null) return;
-            focusItem(this, this.parentElement.querySelectorAll(".tab-item"));
-        });
-        newTab.appendChild(closeTabSpan);
-        newTab.appendChild(tabName);
-        tabs.insertBefore(newTab, tabs.childNodes[tabs.childNodes.length - 2]);
-    }; // row.ondblclick
+    });
+
+    row.addEventListener("dblclick", function () {
+        createNewTab(card.name);
+    }, false);
+
 
     let cellManaCost = row.insertCell(0);
     cellManaCost.className = "cell-align-right";
-    while (manaCost.includes("{") || manaCost.includes("}")) {
-        manaCost = manaCost.replace("{", "").replace("}", "");
-    }
-    manaCost.split('').forEach((item) => {
+    card.mana.toString().split('').forEach((cost) => {
         let manaIcon = document.createElement("span");
-        manaIcon.className = "mana small s" + item.toLowerCase();
+        manaIcon.className = "mana small s" + cost.toLowerCase();
         cellManaCost.appendChild(manaIcon);
     });
 
     let cellName = row.insertCell(1);
-    cellName.appendChild(document.createTextNode(name));
+    cellName.appendChild(document.createTextNode(card.name));
 
     let cellType = row.insertCell(2);
-    cellType.appendChild(document.createTextNode(type));
+    cellType.appendChild(document.createTextNode(card.type));
 
     let cellSet = row.insertCell(3);
     cellSet.className = "cell-center";
-    cellSet.appendChild(document.createTextNode(set));
+    cellSet.appendChild(document.createTextNode(card.set));
 
     let cellRarity = row.insertCell(4);
     cellRarity.className = "cell-center";
     let iconRarity = document.createElement("span");
-    iconRarity.className = "icon icon-record " + rarity;
+    iconRarity.className = "icon icon-record " + card.rarity;
     cellRarity.appendChild(iconRarity);
 
     let cellPower = row.insertCell(5);
     cellPower.className = "cell-center";
-    cellPower.appendChild(document.createTextNode(power !== undefined ? power : ""));
+    cellPower.appendChild(document.createTextNode(
+        card.power !== undefined ? card.power : ""));
 
     let cellToughness = row.insertCell(6);
     cellToughness.className = "cell-center";
-    cellToughness.appendChild(document.createTextNode(toughness !== undefined ? toughness : ""));
+    cellToughness.appendChild(document.createTextNode(
+        card.toughness !== undefined ? card.toughness : ""));
 } // insertTableRow
 
 function sortColumn(columnNumber) {
@@ -158,17 +164,39 @@ function sortColumn(columnNumber) {
 } // sortColumn
 
 function focusItem(focus, unfocus) {
-    unfocus.forEach((item) => {
-        if (item !== focus && item.classList.contains("active")) {
-            item.classList.remove("active");
-        }
-    });
+    if (unfocus !== undefined) {
+        unfocus.forEach((item) => {
+            if (item !== focus && item.classList.contains("active")) {
+                item.classList.remove("active");
+            }
+        });
+    }
     if (focus.classList.contains("active")) {
         focus.classList.remove("active");
     } else {
         focus.classList.add("active");
     }
 } // focusItem
+
+function createNewTab(name) {
+    let tabs = document.getElementById("tabsGroup");
+    let newTab = document.createElement("div");
+    let closeTabSpan = document.createElement("span");
+    let tabName = document.createTextNode(name);
+    tabs.style.display = "";
+    closeTabSpan.className = "icon icon-cancel icon-close-tab";
+    closeTabSpan.addEventListener('mousedown', function () {
+        newTab.remove();
+    });
+    newTab.className = "tab-item";
+    newTab.addEventListener('mousedown', function () {
+        if (this.parentElement === null) return;
+        focusItem(this, this.parentElement.querySelectorAll(".tab-item"));
+    });
+    newTab.appendChild(closeTabSpan);
+    newTab.appendChild(tabName);
+    tabs.insertBefore(newTab, tabs.childNodes[tabs.childNodes.length - 2]);
+}
 
 function hideTabs() {
     let tabs = document.getElementById("tabsGroup");

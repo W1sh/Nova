@@ -85,7 +85,7 @@
                             Commons
                         </a>
                     </nav>
-                    <nav id="deckNavBar" class="nav-group">
+                    <nav id="deckNavGroup" class="nav-group">
                         <menu type="context" class="menu" id="menu">
                             <menuitem class="menu-item" label="Delete deck">
                             </menuitem>
@@ -108,8 +108,8 @@
                                 <th align="center" onclick="sortColumn(2);" id="thType">Types</th>
                                 <th align="center" onclick="sortColumn(3);" id="thSet">Set</th>
                                 <th align="center" id="thRarity">Rarity</th>
-                                <th align="center" onclick="sortColumn(5);" width="5%" id="thPower">Power</th>
-                                <th align="center" onclick="sortColumn(6);" width="5%" id="thToughness">Toughness</th>
+                                <th align="center" onclick="sortColumn(5);" width="5%" id="thPower">P</th>
+                                <th align="center" onclick="sortColumn(6);" width="5%" id="thToughness">T</th>
                             </tr>
                         </thead>
                         <tbody id="table-content">
@@ -118,7 +118,7 @@
                 </div>
             </div>
         </div>
-        <footer class="toolbar toolbar-footer">
+        <footer class="toolbar toolbar-footer" style="display: none">
             <div class="toolbar-actions">
                 <!--href="https://github.com/W1sh/Nova" -->
                 <span id="resultsFoundText" class="simple-text"></span>
