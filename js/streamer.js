@@ -28,32 +28,23 @@ function parseJsonData(callback) {
     });
 }
 
-function filterResults() {
-    let counter = 0;
-    for (let row of table.getElementsByTagName("tr")) {
-        let containsColor = true;
-        let containsRarity = true;
-        if (filter[0] !== "none") {
-            containsColor = false;
-            for (let child of row.firstChild.children) {
-                if (child.classList.contains(filter[0])) {
-                    containsColor = true;
-                }
-            }
-        }
-        if (filter[1] !== "none") {
-            containsRarity = false;
-            if (row.cells[4].firstChild.classList.contains(filter[1])) {
-                containsRarity = true;
-            }
-        }
-        if (containsColor && containsRarity) {
-            row.style.display = "";
-            counter++;
-        } else {
-            row.style.display = "none";
-        }
+function filterResults(){
+    while (table.firstChild) {
+        table.removeChild(table.firstChild);
     }
-    let resultsFoundText = document.getElementById("resultsFoundText");
-    resultsFoundText.innerText = counter + " results found";
+    if(filter.colors.length === 0 && filter.rarity.length === 0 && filter.name.length === 0 ){
+        results.forEach((item) => {
+            insertTableRow(item);
+        });
+        return;
+    }
+    let filteredResults = results.filter((item) => {
+        let hasRarityInFilter = filter.rarity.includes(item.rarity);
+        let hasColorsInFilter = filter.colors.length > 0 ? item.mana.containsColor(filter.colors) : true;
+        let hasNameInFilter = filter.name.length > 0 ? item.name.includes(filter.name) : true;
+        return hasRarityInFilter && hasColorsInFilter && hasNameInFilter;
+    });
+    filteredResults.forEach((item) => {
+        insertTableRow(item);
+    });
 }

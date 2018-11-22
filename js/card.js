@@ -46,6 +46,34 @@ class Mana {
         });
     }
 
+    containsColor(arrColors) {
+        let contains = false;
+        for (let i = 0; i < arrColors.length; i++) {
+            switch (arrColors[i]) {
+                case "Colorless":
+                    contains = this.hasColorless();
+                    break;
+                case "White":
+                    contains = this.hasWhite();
+                    break;
+                case "Red":
+                    contains = this.hasRed();
+                    break;
+                case "Green":
+                    contains = this.hasGreen();
+                    break;
+                case "Black":
+                    contains = this.hasBlack();
+                    break;
+                case "Blue":
+                    contains = this.hasBlue();
+                    break;
+            }
+            if (contains) return true;
+        }
+        return contains;
+    }
+
     convertedManaCost() {
         return this.cost.colorless + this.cost.white + this.cost.red +
             this.cost.green + this.cost.black + this.cost.blue;

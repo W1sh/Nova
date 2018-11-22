@@ -27,11 +27,9 @@ function initSidebar() {
                     if (navItem.classList.contains("active")) {
                         filter.colors.push(navItemTextColors);
                     } else {
-                        filter.colors.splice(filter.colors.indexOf(navItemTextColors));
+                        filter.colors.splice(filter.colors.indexOf(navItemTextColors), 1);
                     }
-                    /*filter[0] = (filter[0] === navItem.childNodes[1].id.substring(0, 2)) ?
-                        "none" : navItem.childNodes[1].id.substring(0, 2);
-                    filterResults();*/
+                    filterResults();
                 });
                 break;
             case "raritiesNavGroup":
@@ -41,10 +39,10 @@ function initSidebar() {
                     if (navItem.classList.contains("active")) {
                         filter.rarity.push(navItemTextRarity);
                     } else {
-                        filter.rarity.splice(navItemTextRarity);
+                        filter.rarity.splice(filter.rarity.indexOf(navItemTextRarity), 1);
                     }
-                    /*filter[1] = (filter[1] === navItem.childNodes[1].id) ? "none" : navItem.childNodes[1].id;
-                    filterResults();*/
+                    filterResults();
+                    console.log(filter);
                 });
                 break;
             case "deckNavGroup":
@@ -79,10 +77,8 @@ function initPane() {
     let textSearchBar = document.getElementById("searcher");
     textSearchBar.addEventListener("keydown", function (e) {
         if (e.keyCode === 13) {
-            while (table.firstChild) {
-                table.removeChild(table.firstChild);
-            }
             filter.name = this.value;
+            filterResults();
         }
     });
 } // initPane
