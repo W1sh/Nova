@@ -1,158 +1,200 @@
 // jshint esversion: 6
-let table;
+var table;
+var results = [];
+const filter = {
+    name: "",
+    colors: [],
+    rarity: []
+};
 
 window.onload = function onload() {
     initSidebar();
     initPane();
 
-    populateTable();
+    parseJsonData(function () {
+        results.forEach((item) => insertTableRow(item));
+    });
 }; // onload
 
 function initSidebar() {
-    let navItems = document.getElementsByClassName("nav-group-item");
-    Array.from(navItems).forEach(function (navItem) {
-        if (navItem.parentElement.id === "categoriesNavGroup") {
-            navItem.addEventListener('mousedown', function () {
-                focus(this, navItem.parentElement.getElementsByClassName("nav-group-item"));
-            });
-        } else {
-            navItem.addEventListener('mousedown', function (e) {
-                if (e.button > 0) return;
-                let deckNavBar = $("deckNavBar");
-                let newAElement = document.createElement("a");
-                newAElement.className = "nav-group-item";
-                newAElement.onmousedown = function (e) {
-                    if (e.button === 0) {
-                        focus(this, this.parentElement.getElementsByClassName("nav-group-item"));
-                    } else if (e.button === 2) {
-                        this.parentElement.removeChild(this);
+    let navItems = document.querySelectorAll(".nav-group-item");
+    navItems.forEach(function (navItem) {
+        switch (navItem.parentElement.id) {
+            case "colorsNavGroup":
+                navItem.addEventListener('mousedown', function () {
+                    focusItem(navItem);
+                    let navItemTextColors = navItem.textContent.trim();
+                    if (navItem.classList.contains("active")) {
+                        filter.colors.push(navItemTextColors);
+                    } else {
+                        filter.colors.splice(filter.colors.indexOf(navItemTextColors), 1);
                     }
-                }; // newAElement.onmousedown
-                let txtA = document.createTextNode("New deck");
-                newAElement.appendChild(txtA);
-                deckNavBar.appendChild(newAElement);
-            });
+                    filterResults();
+                });
+                break;
+            case "raritiesNavGroup":
+                navItem.addEventListener('mousedown', function () {
+                    focusItem(navItem);
+                    let navItemTextRarity = navItem.textContent.trim().toLowerCase();
+                    if (navItem.classList.contains("active")) {
+                        filter.rarity.push(navItemTextRarity);
+                    } else {
+                        filter.rarity.splice(filter.rarity.indexOf(navItemTextRarity), 1);
+                    }
+                    filterResults();
+                    console.log(filter);
+                });
+                break;
+            case "deckNavGroup":
+                navItem.addEventListener('mousedown', function (e) {
+                    if (e.button > 0) return;
+                    console.log("   mmmm");
+                    let deckNavBar = document.getElementById("deckNavGroup");
+                    let newAElement = document.createElement("a");
+                    newAElement.className = "nav-group-item";
+                    newAElement.onmousedown = function (e) {
+                        if (e.button === 0) {
+                            focusItem(this, this.parentElement.querySelectorAll(".nav-group-item"));
+                        } else if (e.button === 2) {
+                            this.parentElement.removeChild(this);
+                        }
+                    }; // newAElement.onmousedown
+                    let txtA = document.createTextNode("New deck");
+                    newAElement.appendChild(txtA);
+                    deckNavBar.appendChild(newAElement);
+                });
+                break;
         }
     });
 } // initSidebar
 
 function initPane() {
-    let textSearchBar = $("searcher");
-    textSearchBar.onkeyup = function (e) {
-        if (e.keyCode === 13) {
-            while (table.firstChild) {
-                table.removeChild(table.firstChild);
-            }
-            populateTable(this.value);
-        }
-    }; // textSearchBar.onkeyup
+    let mainTab = document.getElementById("mainTab");
+    mainTab.addEventListener("mousedown", function () {
+        focusItem(this, this.parentElement.querySelectorAll(".tab-item"));
+    });
     table = document.getElementsByTagName("tbody")[0];
-    let thName = $("thName");
-    thName.onclick = function () {
-        sortColumn(1);
-    }; // thName.onclick
-    let thType = $("thType");
-    thType.onclick = function () {
-        sortColumn(2);
-    }; // thType.onclick
-    let thSet = $("thSet");
-    thSet.onclick = function () {
-        sortColumn(3);
-    }; // thSet.onclick
-    let thPowerToughness = $("thPowerToughness");
-    thPowerToughness.onclick = function () {
-        //sortColumn(5);
-    }; // thSet.onclick
-    function sortColumn(columnNumber) {
-        let switching, shouldSwitch, rows, x, y;
-        switching = true;
-        rows = table.getElementsByTagName("tr");
-        while (switching) {
-            switching = false;
-            shouldSwitch = false;
-            for (i = 0; i < (rows.length - 1); i++) {
-                x = rows[i].getElementsByTagName("td")[columnNumber];
-                y = rows[i + 1].getElementsByTagName("td")[columnNumber];
-                if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
-                    shouldSwitch = true;
-                    break;
-                }
-            }
-            if (shouldSwitch) {
-                rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
-                switching = true;
-            }
+    let textSearchBar = document.getElementById("searcher");
+    textSearchBar.addEventListener("keydown", function (e) {
+        if (e.keyCode === 13) {
+            filter.name = this.value;
+            filterResults();
         }
-    } // sortColumn
+    });
 } // initPane
 
-function insertTableRow(name, manaCost, type, set, rarity, power, toughness) {
+function insertTableRow(card) {
     let row = table.insertRow(0);
-    row.onclick = function () {
+
+    row.addEventListener("mousedown", function () {
         if (this.classList.contains("selected")) {
             row.classList.remove("selected");
         } else {
-            for (let row of this.parentElement.getElementsByTagName("tr")) {
-                if (row.classList.contains("selected")) {
-                    row.classList.remove("selected");
-                }
-            }
+            this.parentElement.querySelectorAll("tr").forEach((item) => {
+                if (item.classList.contains("selected")) item.classList.remove("selected");
+            });
             row.classList.add("selected");
         }
-    }; // row.onclick
+    });
+
+    row.addEventListener("dblclick", function () {
+        createNewTab(card.name);
+    }, false);
+
 
     let cellManaCost = row.insertCell(0);
     cellManaCost.className = "cell-align-right";
-    cellManaCost.appendChild(document.createTextNode(manaCost));
+    card.mana.toString().split('').forEach((cost) => {
+        let manaIcon = document.createElement("span");
+        manaIcon.className = "mana small s" + cost.toLowerCase();
+        cellManaCost.appendChild(manaIcon);
+    });
 
     let cellName = row.insertCell(1);
-    cellName.appendChild(document.createTextNode(name));
+    cellName.appendChild(document.createTextNode(card.name));
 
     let cellType = row.insertCell(2);
-    cellType.appendChild(document.createTextNode(type));
+    cellType.appendChild(document.createTextNode(card.type));
 
     let cellSet = row.insertCell(3);
     cellSet.className = "cell-center";
-    cellSet.appendChild(document.createTextNode(set));
+    cellSet.appendChild(document.createTextNode(card.set));
 
     let cellRarity = row.insertCell(4);
     cellRarity.className = "cell-center";
     let iconRarity = document.createElement("span");
-    iconRarity.className = "icon icon-record " + rarity;
+    iconRarity.className = "icon icon-record " + card.rarity;
     cellRarity.appendChild(iconRarity);
 
-    let cellPT = row.insertCell(5);
-    let powerToughnessString = (power === undefined ? "" : power + "|" + toughness);
-    cellPT.className = "cell-center";
-    cellPT.appendChild(document.createTextNode(powerToughnessString));
+    let cellPower = row.insertCell(5);
+    cellPower.className = "cell-center";
+    cellPower.appendChild(document.createTextNode(
+        card.power !== undefined ? card.power : ""));
+
+    let cellToughness = row.insertCell(6);
+    cellToughness.className = "cell-center";
+    cellToughness.appendChild(document.createTextNode(
+        card.toughness !== undefined ? card.toughness : ""));
 } // insertTableRow
 
-function focus(objectToFocus, objectsToUnfocus) {
-    if (objectToFocus !== undefined) {
-        if (objectToFocus.classList.contains("active")) {
-            objectToFocus.classList.remove("active");
-        } else {
-            objectToFocus.classList.add("active");
-        }
-        for (let object of objectsToUnfocus) {
-            if (object !== objectToFocus && object.classList.contains("active")) {
-                object.classList.remove("active");
+function sortColumn(columnNumber) {
+    let switching, shouldSwitch, rows, x, y;
+    switching = true;
+    rows = table.getElementsByTagName("tr");
+    while (switching) {
+        switching = false;
+        shouldSwitch = false;
+        for (i = 0; i < (rows.length - 1); i++) {
+            x = rows[i].getElementsByTagName("td")[columnNumber];
+            y = rows[i + 1].getElementsByTagName("td")[columnNumber];
+            if (x.innerHTML.toLowerCase() > y.innerHTML.toLowerCase()) {
+                shouldSwitch = true;
+                break;
             }
         }
-    } else {
-        for (let object of objectsToUnfocus) {
-            object.classList.remove("active");
+        if (shouldSwitch) {
+            rows[i].parentElement.insertBefore(rows[i + 1], rows[i]);
+            switching = true;
         }
     }
-} // focus
+} // sortColumn
 
-function $(query) {
-    let element = document.getElementById(query);
-    let bool = element !== null;
-    if (!bool) {
-        alert("Could not load element with id: " + query);
-        failed = true;
-        return;
+function focusItem(focus, unfocus) {
+    if (unfocus !== undefined) {
+        unfocus.forEach((item) => {
+            if (item !== focus && item.classList.contains("active")) {
+                item.classList.remove("active");
+            }
+        });
     }
-    return element;
-} // $
+    if (focus.classList.contains("active")) {
+        focus.classList.remove("active");
+    } else {
+        focus.classList.add("active");
+    }
+} // focusItem
+
+function createNewTab(name) {
+    let tabs = document.getElementById("tabsGroup");
+    let newTab = document.createElement("div");
+    let closeTabSpan = document.createElement("span");
+    let tabName = document.createTextNode(name);
+    tabs.style.display = "";
+    closeTabSpan.className = "icon icon-cancel icon-close-tab";
+    closeTabSpan.addEventListener('mousedown', function () {
+        newTab.remove();
+    });
+    newTab.className = "tab-item";
+    newTab.addEventListener('mousedown', function () {
+        if (this.parentElement === null) return;
+        focusItem(this, this.parentElement.querySelectorAll(".tab-item"));
+    });
+    newTab.appendChild(closeTabSpan);
+    newTab.appendChild(tabName);
+    tabs.insertBefore(newTab, tabs.childNodes[tabs.childNodes.length - 2]);
+}
+
+function hideTabs() {
+    let tabs = document.getElementById("tabsGroup");
+    tabs.style.display = "none";
+}

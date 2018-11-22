@@ -1,8 +1,20 @@
 @charset "UTF-8";
 
-.selected {
-    background-color: blue !important;
-    color: #FFF;
+tr.selected {
+    color: #fff;
+    background-color: darkgray !important;
+}
+
+.simple-text {
+    display: inline-block;
+    margin-left: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+    vertical-align: middle;
+    white-space: nowrap;
+    color: #555;
+    cursor: default;
 }
 
 .cell-center {
@@ -11,6 +23,10 @@
 
 .cell-align-right {
     text-align: right;
+}
+
+.spaced {
+    margin-right: 7px;
 }
 
 .context-menu {

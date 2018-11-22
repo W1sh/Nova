@@ -8,26 +8,29 @@ let mainWindow;
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
+        width: 1000,
         height: 600
     });
     // and load the index.html of the app.
     mainWindow.setMenu(null);
     mainWindow.webContents.openDevTools();
     mainWindow.loadFile('index.html');
+    mainWindow.webContents.on('will-navigate', ev => {
+        ev.preventDefault();
+    });
     mainWindow.on('closed', function () {
         // Dereference the window object, usually you would store windows
         // in an array if your app supports multi windows, this is the time
         // when you should delete the corresponding element.
         mainWindow = null;
-    });
+    }); 
 }
 app.on('ready', () => {
     createWindow();
     globalShortcut.register('CommandOrControl+R', () => {
         mainWindow.loadFile('index.html');
     });
-    /*globalShortcut.register('F12', () => {
+    /*globalShortcut.register('F4', () => {
         app.relaunch();
         app.exit(0);
     });*/

@@ -9,52 +9,83 @@
     <script src="js/streamer.js"></script>
     <script src="index.js"></script>
     <!-- Stylesheets -->
+    <link rel="stylesheet" href="css/mana-cost.css">
     <link rel="stylesheet" href="css/photon.css">
     <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
     <div class="window">
-        <div class="tab-group" style="display: none">
-            <div class="tab-item active">
-                <span class="icon icon-cancel icon-close-tab"></span>
+        <div id="tabsGroup" class="tab-group" style="display: none">
+            <div onclick="hideTabs();" class="tab-item tab-item-fixed">
+                <span class="icon icon-up-open"></span>
+            </div>
+            <div id="mainTab" class="tab-item active">
+                <!--<span class="icon icon-cancel icon-close-tab"></span>-->
                 Tab
             </div>
             <!--<div class="tab-item active">
                 <span class="icon icon-cancel icon-close-tab"></span>
                 Tab active
             </div>-->
-            <div class="tab-item tab-item-fixed">
+            <!--<div class="tab-item tab-item-fixed">
                 <span class="icon icon-plus"></span>
-            </div>
+            </div>-->
         </div>
         <div class="window-content">
             <div class="pane-group">
                 <div style="display:flex; flex-direction: column" class="pane-sm sidebar">
-                    <nav id="categoriesNavGroup" class="nav-group">
-                        <h5 class="nav-group-title">Rarity</h5>
+                    <nav id="colorsNavGroup" class="nav-group">
+                        <h5 class="nav-group-title">Colors</h5>
                         <a class="nav-group-item">
-                            <span class="icon icon-record masterpiece"></span>
-                            Masterpieces
+                            <span id="scColorsIcon" class="mana spaced small sc"></span>
+                            Colorless
                         </a>
                         <a class="nav-group-item">
-                            <span class="icon icon-record mythic"></span>
-                            Mythics
+                            <span id="swColorsIcon" class="mana spaced small sw"></span>
+                            White
                         </a>
                         <a class="nav-group-item">
-                            <span class="icon icon-record rare"></span>
-                            Rares
+                            <span id="srColorsIcon" class="mana spaced small sr"></span>
+                            Red
                         </a>
                         <a class="nav-group-item">
-                            <span class="icon icon-record uncommon"></span>
-                            Uncommons
+                            <span id="sgColorsIcon" class="mana spaced small sg"></span>
+                            Green
                         </a>
                         <a class="nav-group-item">
-                            <span class="icon icon-record common"></span>
-                            Commons
+                            <span id="sbColorsIcon" class="mana spaced small sb"></span>
+                            Black
+                        </a>
+                        <a class="nav-group-item">
+                            <span id="suColorsIcon" class="mana spaced small su"></span>
+                            Blue
                         </a>
                     </nav>
-                    <nav id="deckNavBar" class="nav-group">
+                    <nav id="raritiesNavGroup" class="nav-group">
+                        <h5 class="nav-group-title">Rarity</h5>
+                        <a class="nav-group-item">
+                            <span id="masterpiece" class="icon icon-record masterpiece"></span>
+                            Masterpiece
+                        </a>
+                        <a class="nav-group-item">
+                            <span id="mythic" class="icon icon-record mythic"></span>
+                            Mythic
+                        </a>
+                        <a class="nav-group-item">
+                            <span id="rare" class="icon icon-record rare"></span>
+                            Rare
+                        </a>
+                        <a class="nav-group-item">
+                            <span id="uncommon" class="icon icon-record uncommon"></span>
+                            Uncommon
+                        </a>
+                        <a class="nav-group-item">
+                            <span id="common" class="icon icon-record common"></span>
+                            Common
+                        </a>
+                    </nav>
+                    <nav id="deckNavGroup" class="nav-group">
                         <menu type="context" class="menu" id="menu">
                             <menuitem class="menu-item" label="Delete deck">
                             </menuitem>
@@ -77,7 +108,8 @@
                                 <th align="center" onclick="sortColumn(2);" id="thType">Types</th>
                                 <th align="center" onclick="sortColumn(3);" id="thSet">Set</th>
                                 <th align="center" id="thRarity">Rarity</th>
-                                <th align="center" id="thPowerToughness">P&T</th>
+                                <th align="center" onclick="sortColumn(5);" width="5%" id="thPower">P</th>
+                                <th align="center" onclick="sortColumn(6);" width="5%" id="thToughness">T</th>
                             </tr>
                         </thead>
                         <tbody id="table-content">
@@ -86,12 +118,10 @@
                 </div>
             </div>
         </div>
-        <footer class="toolbar toolbar-footer">
+        <footer class="toolbar toolbar-footer" style="display: none">
             <div class="toolbar-actions">
                 <!--href="https://github.com/W1sh/Nova" -->
-                <!--<a class="nav-group-item">
-                    <span class="icon icon-github"></span>
-                </a>-->
+                <span id="resultsFoundText" class="simple-text"></span>
                 <button class="btn btn-mini btn-primary pull-right">
                     Save
                 </button>
